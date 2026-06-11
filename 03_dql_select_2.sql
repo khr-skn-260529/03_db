@@ -88,4 +88,58 @@ ON a.DEPT_CODE = b.DEPT_ID
 ORDER BY a.EMP_ID;
 
 
+# ============ #
+## menudb 계정 ##
+-- CROSS JOIN --
+# 카테시안 곱, 곱 집합
+# 조인되는 두 테이블의 모든 경우의 수를 처리한 것
+SELECT COUNT(*)     #COUNT(*): 행의 수 count
+FROM tbl_menu;      #22행
+SELECT COUNT(*)
+FROM tbl_category;   #12행
 
+SELECT *
+FROM tbl_menu CROSS JOIN tbl_category;
+# 22 * 12 = 264행
+
+
+-- SELF JOIN --
+# 하나의 테이블에서 한 행이 다른 행을 참조하는 관계가 있는 경우에
+# 같은 테이블끼리 조인하는 것
+# [tip] 똑같은 테이블이 2개 있다고 생각하면 쉬움
+SELECT * FROM tbl_category;
+
+SELECT child.category_code, child.category_name, parent.category_name as "상위 카테고리"
+FROM tbl_category child JOIN tbl_category parent
+ON child.ref_category_code = parent.category_code;
+# WHERE parent.category_name = '식사';
+
+
+-- MULTIPLE JOIN (다중 조인) --
+# 3개 이상의 테이블을 조인하는 것
+# JOIN 순서가 매우 중요함
+# ex) a JOIN b JOIN c
+# -> (a+b) JOIN c
+# -> (a+b+c)
+SELECT * FROM tbl_order;
+SELECT * FROM tbl_order_menu;
+SELECT * FROM tbl_menu;
+
+SELECT *
+FROM tbl_order o
+JOIN tbl_order_menu om
+ON o.order_code = om.order_code # o,om 합쳐진 relation 생성
+RIGHT JOIN tbl_menu m
+ON m.menu_code = om.menu_code;
+
+# ===============
+# employeedb 계정으로 변경
+SELECT * FROM employee;
+SELECT * FROM department;
+SELECT * FROM location;
+
+SELECT * FROM employee e
+JOIN department d
+ON e.DEPT_CODE = d.DEPT_ID
+JOIN location l
+ON d.LOCATION_ID = l.LOCAL_CODE;
